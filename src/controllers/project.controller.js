@@ -87,27 +87,6 @@ const getProjectsByStatus = catchAsync(async (req, res) => {
 });
 
 /**
- * Lấy dự án theo quản lý
- */
-const getProjectsByManager = catchAsync(async (req, res) => {
-    const options = {
-        page: req.query.page || 1,
-        limit: req.query.limit || 10
-    };
-
-    const projects = await projectService.getProjectsByManager(
-        req.params.managerId,
-        options
-    );
-
-    res.status(200).json({
-        success: true,
-        message: 'Lấy danh sách dự án thành công',
-        data: projects
-    });
-});
-
-/**
  * Lấy dự án đang thực hiện
  */
 const getActiveProjects = catchAsync(async (req, res) => {
@@ -397,7 +376,6 @@ module.exports = {
     getProjectById,
     getAllProjects,
     getProjectsByStatus,
-    getProjectsByManager,
     getActiveProjects,
     getUpcomingDeadlines,
     searchProjects,

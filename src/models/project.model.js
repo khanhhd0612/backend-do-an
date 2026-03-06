@@ -70,21 +70,14 @@ const projectSchema = mongoose.Schema(
             },
             contactPerson: String,
             phone: String,
-            email: String
-        },
-
-        projectManager: {
-            type: mongoose.SchemaTypes.ObjectId,
-            ref: 'User',
-            required: true
-        },
-
-        supervisors: [
-            {
-                type: mongoose.SchemaTypes.ObjectId,
-                ref: 'User'
+            email: {
+                type: String,
+                validate: {
+                    validator: validator.isEmail,
+                    message: 'Email không hợp lệ'
+                }
             }
-        ],
+        },
 
         startDate: {
             type: Date,
@@ -100,11 +93,6 @@ const projectSchema = mongoose.Schema(
                 },
                 message: 'Ngày kết thúc phải sau ngày bắt đầu'
             }
-        },
-
-        estimatedDuration: {
-            type: Number,
-            required: true
         },
 
         budget: {
@@ -192,27 +180,34 @@ const projectSchema = mongoose.Schema(
             ref: 'User',
             required: true
         },
-
-        createdAt: {
-            type: Date,
-            default: Date.now
-        },
-
-        updatedAt: {
-            type: Date,
-            default: Date.now
-        }
     },
     { timestamps: true }
 );
 
 projectSchema.index({ projectCode: 1 }, { unique: true });
-projectSchema.index({ projectManager: 1 });
 projectSchema.index({ status: 1 });
 projectSchema.index({ createdAt: -1 });
 
 projectSchema.plugin(toJSON);
 projectSchema.plugin(paginate);
+
+projectSchema.virtual('estimatedDuration').get(function () {
+    if (!this.startDate || !this.endDate) return 0;
+
+    const start = new Date(this.startDate);
+    const end = new Date(this.endDate);
+
+    const years = end.getFullYear() - start.getFullYear();
+    const months = end.getMonth() - start.getMonth();
+
+    let totalMonths = years * 12 + months;
+
+    if (end.getDate() >= start.getDate()) {
+        totalMonths += 1;
+    }
+
+    return totalMonths > 0 ? totalMonths : 0;
+});
 
 
 projectSchema.virtual('budgetRemaining').get(function () {
@@ -246,6 +241,14 @@ projectSchema.statics.findActiveProjects = async function () {
 };
 
 projectSchema.methods.addTeamMember = async function (employeeId, role) {
+    const exists = this.team.some(
+        m => m.employee.toString() === employeeId.toString()
+    );
+
+    if (exists) {
+        throw new Error('Nhân viên đã tồn tại trong dự án');
+    }
+
     this.team.push({ employee: employeeId, role });
     return await this.save();
 };

@@ -4,6 +4,7 @@ const projectRoute = require('./project.route');
 const employeeRoute = require('./employee.route');
 const timesheetRoute = require('./timesheet.route');
 const payrollRoute = require('./payroll.route');
+const departmentRoute = require('./department.route');
 
 const router = express.Router();
 
@@ -27,6 +28,10 @@ const defaultRoutes = [
     {
         path: '/payrolls',
         route: payrollRoute,
+    },
+    {
+        path: '/departments',
+        route: departmentRoute,
     }
 ];
 

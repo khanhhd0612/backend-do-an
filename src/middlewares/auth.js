@@ -8,7 +8,7 @@ const verifyCallback = (req, resolve, reject, requiredRights) => async (err, use
     }
 
     if (!user) {
-        return reject(new ApiError(401, 'Không có quyền truy cập'));
+        return reject(new ApiError(401, 'Vui lòng đăng nhập để tiếp tục'));
     }
 
     req.user = user;
@@ -20,7 +20,7 @@ const verifyCallback = (req, resolve, reject, requiredRights) => async (err, use
         );
 
         if (!hasRequiredRights && req.params.userId !== user.id) {
-            return reject(new ApiError(403, 'Không đủ quyền'));
+            return reject(new ApiError(403, 'Bạn không đủ quyền thực hiện hành động này'));
         }
     }
 

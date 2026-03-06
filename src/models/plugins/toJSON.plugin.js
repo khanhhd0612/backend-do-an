@@ -21,6 +21,8 @@ const toJSON = (schema) => {
     }
 
     schema.options.toJSON = Object.assign(schema.options.toJSON || {}, {
+        virtuals: true,      
+        versionKey: false,
         transform(doc, ret, options) {
             Object.keys(schema.paths).forEach((path) => {
                 if (schema.paths[path].options && schema.paths[path].options.private) {

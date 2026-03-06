@@ -3,6 +3,8 @@ const allRoles = {
         'getUsers',
         'manageUsers',
 
+        'manageDepartments',
+
         'getEmployees',
         'manageEmployees',
         'managePayroll',

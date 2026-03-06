@@ -119,20 +119,6 @@ const createProject = {
                     .optional()
             }),
 
-        projectManager: Joi.string()
-            .required()
-            .custom(objectId)
-            .messages({
-                'any.required': 'Quản lý dự án là bắt buộc'
-            }),
-
-        supervisors: Joi.array()
-            .items(
-                Joi.string().custom(objectId).messages({
-                    'any.invalid': 'ID giám sát viên không hợp lệ'
-                })
-            ),
-
         startDate: Joi.date()
             .required()
             .messages({
@@ -147,19 +133,6 @@ const createProject = {
                 'any.required': 'Ngày kết thúc là bắt buộc',
                 'date.base': 'Ngày kết thúc phải là một ngày hợp lệ',
                 'date.greater': 'Ngày kết thúc phải sau ngày bắt đầu'
-            }),
-
-        estimatedDuration: Joi.number()
-            .required()
-            .integer()
-            .min(1)
-            .max(120)
-            .messages({
-                'any.required': 'Thời gian dự kiến là bắt buộc',
-                'number.base': 'Thời gian dự kiến phải là số',
-                'number.integer': 'Thời gian dự kiến phải là số nguyên',
-                'number.min': 'Thời gian phải ít nhất 1 tháng',
-                'number.max': 'Thời gian không quá 120 tháng'
             }),
 
         budget: Joi.object()
@@ -243,9 +216,6 @@ const updateProject = {
                 phone: Joi.string().trim().custom(phone),
                 email: Joi.string().trim().lowercase().custom(email)
             }),
-
-            projectManager: Joi.string().custom(objectId),
-            supervisors: Joi.array().items(Joi.string().custom(objectId)),
 
             startDate: Joi.date(),
             endDate: Joi.date().greater(Joi.ref('startDate')),

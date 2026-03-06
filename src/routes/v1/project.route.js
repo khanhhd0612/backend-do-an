@@ -18,8 +18,6 @@ router.get('/search', auth('getProjects'), projectController.searchProjects);
 
 router.get('/status/:status', auth('getProjects'), validate(projectValidation.getProject), projectController.getProjectsByStatus);
 
-router.get('/manager/:managerId', auth('getProjects'), validate(projectValidation.getProject), projectController.getProjectsByManager);
-
 router.get('/:projectId/stats', auth('getProjects'), validate(projectValidation.getProject), projectController.getProjectStats);
 
 router.get('/:projectId/team', auth('getProjects'), validate(projectValidation.getProject), projectController.getProjectTeamMembers);

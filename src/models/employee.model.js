@@ -86,9 +86,9 @@ const employeeSchema = mongoose.Schema(
         },
 
         department: {
-            type: String,
-            required: [true, 'Phòng ban là bắt buộc'],
-            trim: true
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: 'Department',
+            required: [true, 'Phòng ban là bắt buộc']
         },
 
         employmentType: {
@@ -318,26 +318,6 @@ employeeSchema.index({ createdAt: -1 });
 
 employeeSchema.plugin(toJSON);
 employeeSchema.plugin(paginate);
-
-employeeSchema.virtual('age').get(function () {
-    const today = new Date();
-    let age = today.getFullYear() - this.dateOfBirth.getFullYear();
-    const monthDiff = today.getMonth() - this.dateOfBirth.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < this.dateOfBirth.getDate())) {
-        age--;
-    }
-    return age;
-});
-
-employeeSchema.virtual('yearsOfService').get(function () {
-    const today = new Date();
-    let years = today.getFullYear() - this.hireDate.getFullYear();
-    const monthDiff = today.getMonth() - this.hireDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < this.hireDate.getDate())) {
-        years--;
-    }
-    return years;
-});
 
 employeeSchema.virtual('isActive').get(function () {
     return this.status === 'active' && !this.leaveDate;

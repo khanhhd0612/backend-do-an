@@ -22,9 +22,7 @@ const createProject = async (projectBody) => {
  */
 const getProjectById = async (projectId) => {
     const project = await Project.findById(projectId)
-        // .populate('projectManager', 'name email phone')
-        // .populate('supervisors', 'name email')
-        // .populate('team.employee', 'name position phone')
+        .populate('team.employee', 'fullName position phone')
         .populate('createdBy', 'name email');
 
     if (!project) {
@@ -261,14 +259,6 @@ const addTeamMember = async (projectId, employeeId, role) => {
         throw new ApiError(404, 'Dự án không tồn tại');
     }
 
-    // Kiểm tra nhân viên đã trong dự án không
-    const memberExists = project.team.some(
-        m => m.employee.toString() === employeeId.toString()
-    );
-    if (memberExists) {
-        throw new ApiError(400, 'Nhân viên đã trong dự án');
-    }
-
     await project.addTeamMember(employeeId, role);
     return project;
 };
@@ -459,9 +449,7 @@ const searchProjects = async (criteria, options = {}) => {
     if (criteria.city) {
         filter['location.city'] = criteria.city;
     }
-    if (criteria.managerId) {
-        filter.projectManager = criteria.managerId;
-    }
+   
     if (criteria.keyword) {
         filter.$or = [
             { projectName: { $regex: criteria.keyword, $options: 'i' } },

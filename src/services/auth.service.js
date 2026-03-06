@@ -68,23 +68,23 @@ const login = async (userName, password) => {
 
 const refreshAccessToken = async (refreshToken) => {
     if (!refreshToken) {
-        throw new ApiError(403, 'Refresh token không tồn tại');
+        throw new ApiError(401, 'Refresh token không tồn tại');
     }
 
     let decoded;
     try {
         decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
     } catch (err) {
-        throw new ApiError(403, 'Refresh token không hợp lệ hoặc đã hết hạn');
+        throw new ApiError(401, 'Refresh token không hợp lệ hoặc đã hết hạn');
     }
 
     if (decoded.type !== 'refresh') {
-        throw new ApiError(403, 'Token không hợp lệ');
+        throw new ApiError(401, 'Token không hợp lệ');
     }
 
     const user = await User.findById(decoded.id);
     if (!user || !user.isActive) {
-        throw new ApiError(403, 'User không tồn tại hoặc bị khoá');
+        throw new ApiError(401, 'User không tồn tại hoặc bị khoá');
     }
 
     const accessToken = jwt.sign(
